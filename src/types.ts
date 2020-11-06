@@ -9,17 +9,24 @@ export interface PluginEvent {
     properties?: Record<string, any>
 }
 
-export interface PluginMeta {
-    team: number | string,
-    order: number,
-    name: string,
-    tag: string | null,
-    config: Record<string, any>,
-    attachments: Record<string, MetaAttachment>
-}
-
-export interface MetaAttachment {
+export interface PluginAttachment {
     content_type: string
     file_name: string
     contents: any
+}
+
+export interface PluginMeta {
+    cache: CacheExtension
+    console: ConsoleExtension
+}
+
+export interface CacheExtension {
+    set: (key: string, value: unknown) => void
+    get: (key: string, defaultValue: unknown) => Promise<unknown>
+}
+
+export interface ConsoleExtension {
+    log: (...args: unknown[]) => void
+    error: (...args: unknown[]) => void
+    debug: (...args: unknown[]) => void
 }
