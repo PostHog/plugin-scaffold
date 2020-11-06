@@ -15,4 +15,11 @@ export interface PluginMeta {
     name: string,
     tag: string | null,
     config: Record<string, any>,
+    attachments: Record<string, MetaAttachment>
+}
+
+export interface MetaAttachment {
+    content_type: string
+    file_name: string
+    contents: any
 }
