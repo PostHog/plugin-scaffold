@@ -1,6 +1,6 @@
 {
     "name": "posthog-plugins",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Types for PostHog Plugins",
     "main": "src/types.ts",
     "types": "src/types.ts",
