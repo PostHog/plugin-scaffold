@@ -17,7 +17,6 @@ export interface PluginAttachment {
 
 export interface PluginMeta {
     cache: CacheExtension
-    console: ConsoleExtension
 }
 
 export interface PluginConfigSchema {
