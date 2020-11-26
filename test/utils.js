@@ -71,7 +71,10 @@ function createCache() {
         set: (key, value) => {
             cache[key] = value
         },
-        get: async (key) => {
+        get: async (key, defaultValue) => {
+            if (typeof cache[key] === 'undefined') {
+                return defaultValue
+            }
             return cache[key]
         },
     }
