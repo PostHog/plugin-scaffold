@@ -31,8 +31,10 @@ export interface PluginConfigSchema {
 }
 
 export interface CacheExtension {
-    set: (key: string, value: unknown) => void
+    set: (key: string, value: unknown, ttlSeconds?: number) => Promise<void>
     get: (key: string, defaultValue: unknown) => Promise<unknown>
+    incr: (key: string) => Promise<number>
+    expire: (key: string, ttlSeconds: number) => Promise<boolean>
 }
 
 export interface ConsoleExtension {
