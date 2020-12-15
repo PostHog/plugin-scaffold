@@ -7,6 +7,9 @@ export interface PluginEvent {
     event: string
     sent_at?: string
     properties?: Record<string, any>
+    timestamp?: string
+    offset?: number
+    $set?: Record<string, any> // person properties update
 }
 
 export interface PluginAttachment {
