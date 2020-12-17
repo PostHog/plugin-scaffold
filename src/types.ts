@@ -9,7 +9,10 @@ export interface PluginEvent {
     properties?: Record<string, any>
     timestamp?: string
     offset?: number
-    $set?: Record<string, any> // person properties update
+    /** Person properties update. */
+    $set?: Record<string, any>
+    /** The offset of the Kafka message this event was passed in (EE pipeline-only). */
+    kafka_offset?: string
 }
 
 export interface PluginAttachment {
