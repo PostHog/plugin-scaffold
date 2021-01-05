@@ -23,6 +23,7 @@ export interface PluginAttachment {
 
 export interface PluginMeta {
     cache: CacheExtension
+    storage: StorageExtension
 }
 
 export interface PluginConfigSchema {
@@ -41,6 +42,11 @@ export interface CacheExtension {
     get: (key: string, defaultValue: unknown) => Promise<unknown>
     incr: (key: string) => Promise<number>
     expire: (key: string, ttlSeconds: number) => Promise<boolean>
+}
+
+export interface StorageExtension {
+    set: (key: string, value: unknown) => Promise<void>
+    get: (key: string, defaultValue: unknown) => Promise<unknown>
 }
 
 export interface ConsoleExtension {
