@@ -1,5 +1,7 @@
 ## `@posthog/plugin-scaffold`
 
+[![npm](https://img.shields.io/npm/v/@posthog/plugin-scaffold.svg)](https://www.npmjs.com/package/@posthog/plugin-scaffold)
+
 This project contains shared typescript types that PostHog plugin
 authors can use.
 
