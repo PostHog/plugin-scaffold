@@ -2,10 +2,13 @@
     "name": "@posthog/plugin-scaffold",
     "version": "0.2.7",
     "description": "Types and utilities for PostHog Plugins",
-    "main": "src/types.ts",
-    "types": "src/types.ts",
-    "scripts": {},
     "author": "PostHog <hey@posthog.com>",
-    "repository": "https://github.com/PostHog/posthog-plugins",
-    "license": "MIT"
+    "repository": "github:PostHog/plugin-scaffold",
+    "bugs": {
+        "url": "https://github.com/PostHog/plugin-scaffold/issues"
+    },
+    "homepage": "https://github.com/PostHog/plugin-scaffold#readme",
+    "license": "MIT",
+    "main": "src/types.ts",
+    "types": "src/types.ts"
 }
