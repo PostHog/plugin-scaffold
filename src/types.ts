@@ -13,6 +13,8 @@ export interface PluginEvent {
     $set?: Record<string, any>
     /** The offset of the Kafka message this event was passed in (EE pipeline-only). */
     kafka_offset?: string
+    /** The assigned UUIDT of the event (EE pipeline-only). */
+    uuid?: string
 }
 
 export interface PluginAttachment {
