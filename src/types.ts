@@ -1,3 +1,19 @@
+/** A PostHog plugin. `export default` it. */
+export interface Plugin {
+    /** Ran when plugin */
+    setupPlugin?: (meta: PluginMeta) => void
+    /** Receive a single event and return it in its processed form. You can discard the event by returning null. */
+    processEvent?: (event: PluginEvent, meta: PluginMeta) => PluginEvent | null
+    /** Receive a batch of events and return it in its processed form. You can discard events by not including them in the returned array. You can also append additional events to the returned array. */
+    processEventBatch?: (eventBatch: PluginEvent[], meta: PluginMeta) => PluginEvent[]
+    /** Ran every minute, on the minute. */
+    runEveryMinute?: (meta: PluginMeta) => void
+    /** Ran every hour, on the hour. */
+    runEveryHour?: (meta: PluginMeta) => void
+    /** Ran every day, on midnight. */
+    runEveryDay?: (meta: PluginMeta) => void
+}
+
 export interface PluginEvent {
     distinct_id: string
     ip: string
