@@ -1,4 +1,4 @@
-/** A PostHog plugin. `export default` it. */
+/** A PostHog plugin. */
 export interface Plugin {
     /** Ran when plugin */
     setupPlugin?: (meta: PluginMeta) => void
