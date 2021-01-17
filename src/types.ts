@@ -1,6 +1,6 @@
 /** A PostHog plugin. */
 export interface Plugin {
-    /** Ran when plugin */
+    /** Ran when the plugin is loaded by the PostHog plugin server. */
     setupPlugin?: (meta: PluginMeta) => void
     /** Receive a single event and return it in its processed form. You can discard the event by returning null. */
     processEvent?: (event: PluginEvent, meta: PluginMeta) => PluginEvent | null
