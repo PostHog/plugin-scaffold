@@ -84,6 +84,7 @@ function resetMeta(meta) {
     testMeta = {
         config: {},
         cache: createCache(),
+        storage: createCache(),
         global: {},
         attachments: {},
         ...meta,
