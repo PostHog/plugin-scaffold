@@ -1,3 +1,5 @@
+export type Properties = Record<string, any>
+
 export interface PluginEvent {
     distinct_id: string
     ip: string
@@ -6,11 +8,12 @@ export interface PluginEvent {
     now: string
     event: string
     sent_at?: string
-    properties?: Record<string, any>
+    properties?: Properties
     timestamp?: string
     offset?: number
     /** Person properties update. */
-    $set?: Record<string, any>
+    $set?: Properties
+    $set_once?: Properties
     /** The offset of the Kafka message this event was passed in (EE pipeline-only). */
     kafka_offset?: string
     /** The assigned UUIDT of the event (EE pipeline-only). */
