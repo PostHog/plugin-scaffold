@@ -57,6 +57,7 @@ export interface PluginConfigSchema {
     markdown?: string
     order?: number
     required?: boolean
+    secret?: boolean
 }
 
 export interface CacheExtension {
