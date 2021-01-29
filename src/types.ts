@@ -27,8 +27,9 @@ export interface PluginEvent {
     properties?: Properties
     timestamp?: string
     offset?: number
-    /** Person properties update. */
+    /** Person properties update (override). */
     $set?: Properties
+    /** Person properties update (if not set). */
     $set_once?: Properties
     /** The offset of the Kafka message this event was passed in (EE pipeline-only). */
     kafka_offset?: string
