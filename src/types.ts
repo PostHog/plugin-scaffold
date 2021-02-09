@@ -64,7 +64,7 @@ interface PluginConfigDefault extends PluginConfigStructure {
     type?: 'string' | 'attachment'
 } 
 
-interface PluginConfigSelection extends PluginConfigStructure {
+interface PluginConfigChoice extends PluginConfigStructure {
     type: 'choice'
     choices: string[]
 }
