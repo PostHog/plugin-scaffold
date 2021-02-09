@@ -65,8 +65,8 @@ interface PluginConfigDefault extends PluginConfigStructure {
 } 
 
 interface PluginConfigSelection extends PluginConfigStructure {
-    type: 'selection'
-    options: string[]
+    type: 'choice'
+    choices: string[]
 }
 
 export type PluginConfigSchema = PluginConfigDefault | PluginConfigSelection
