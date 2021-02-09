@@ -49,10 +49,9 @@ export interface PluginMeta {
     config: Record<string, any>
 }
 
-export interface PluginConfigSchema {
+interface PluginConfigStructure {
     key?: string
     name?: string
-    type?: 'string' | 'attachment'
     default?: string
     hint?: string
     markdown?: string
@@ -61,6 +60,16 @@ export interface PluginConfigSchema {
     secret?: boolean
 }
 
+interface PluginConfigDefault extends PluginConfigStructure {
+    type?: 'string' | 'attachment'
+} 
+
+interface PluginConfigChoice extends PluginConfigStructure {
+    type: 'choice'
+    choices: string[]
+}
+
+export type PluginConfigSchema = PluginConfigDefault | PluginConfigSelection
 export interface CacheExtension {
     set: (key: string, value: unknown, ttlSeconds?: number) => Promise<void>
     get: (key: string, defaultValue: unknown) => Promise<unknown>
