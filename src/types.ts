@@ -49,7 +49,7 @@ export interface PluginMeta {
     config: Record<string, any>
 }
 
-interface PluginConfigStructure {
+export interface PluginConfigStructure {
     key?: string
     name?: string
     default?: string
@@ -60,11 +60,11 @@ interface PluginConfigStructure {
     secret?: boolean
 }
 
-interface PluginConfigDefault extends PluginConfigStructure {
+export interface PluginConfigDefault extends PluginConfigStructure {
     type?: 'string' | 'attachment'
 } 
 
-interface PluginConfigChoice extends PluginConfigStructure {
+export interface PluginConfigChoice extends PluginConfigStructure {
     type: 'choice'
     choices: string[]
 }
