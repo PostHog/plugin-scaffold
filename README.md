@@ -1,6 +1,7 @@
-## `@posthog/plugin-scaffold`
+## PostHog Plugin Scaffold
 
-[![npm](https://img.shields.io/npm/v/@posthog/plugin-scaffold.svg)](https://www.npmjs.com/package/@posthog/plugin-scaffold)
+[![npm package](https://img.shields.io/npm/v/@posthog/plugin-scaffold?style=flat-square)](https://www.npmjs.com/package/@posthog/plugin-scaffold)
+[![MIT License](https://img.shields.io/badge/License-MIT-red.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 This project contains shared typescript types that PostHog plugin
 authors can use.
