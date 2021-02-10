@@ -70,6 +70,7 @@ export interface PluginConfigChoice extends PluginConfigStructure {
 }
 
 export type PluginConfigSchema = PluginConfigDefault | PluginConfigChoice
+
 export interface CacheExtension {
     set: (key: string, value: unknown, ttlSeconds?: number) => Promise<void>
     get: (key: string, defaultValue: unknown) => Promise<unknown>
