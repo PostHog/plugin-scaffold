@@ -18,7 +18,7 @@ export type Properties = Record<string, any>
 
 export interface PluginEvent {
     distinct_id: string
-    ip: string
+    ip: string | null
     site_url: string
     team_id: number
     now: string
