@@ -7,66 +7,53 @@ on:
             - master
 
 jobs:
-    release:
-        name: Bake a Release
+    check-package-version:
+        name: Check package version and detect an update
         runs-on: ubuntu-20.04
+        outputs:
+            repo-version: ${{ steps.check-package-version.outputs.repo-version }}
+            published-version: ${{ steps.check-package-version.outputs.published-version }}
+            is-unpublished-version: ${{ steps.check-package-version.outputs.is-unpublished-version }}
+        steps:
+            - name: Checkout the repository
+              uses: actions/checkout@v2
 
+            - name: Check package version and detect an update
+              id: check-package-version
+              uses: PostHog/check-package-version@v1
+
+    release:
+        name: Publish release if new version
+        runs-on: ubuntu-20.04
+        needs: check-package-version
+        if: needs.check-package-version.outputs.is-unpublished-version == 'true'
+        env:
+            REPO_VERSION: ${{ needs.check-package-version.outputs.repo-version }}
+            PUBLISHED_VERSION: ${{ needs.check-package-version.outputs.published-version }}
         steps:
             - name: Checkout the repository
               uses: actions/checkout@v2
               with:
                   fetch-depth: 0
 
-            - name: Get package version
-              id: version
-              run: |
-                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
-                  PACKAGE_VERSION_TAG="v$PACKAGE_VERSION"
-                  if git rev-parse "$PACKAGE_VERSION_TAG"; then
-                    IS_NEW_VERSION=false
-                  else
-                    IS_NEW_VERSION=true
-                  fi
-                  echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
-                  echo "PACKAGE_VERSION_TAG=$PACKAGE_VERSION_TAG" >> $GITHUB_ENV
-                  echo "IS_NEW_VERSION=$IS_NEW_VERSION" >> $GITHUB_ENV
-                  echo "::set-output name=IS_NEW_VERSION::$IS_NEW_VERSION"
-
             - name: Set up Node 14
-              if: steps.version.outputs.IS_NEW_VERSION == 'true'
               uses: actions/setup-node@v2
               with:
                   node-version: 14
                   registry-url: https://registry.npmjs.org
 
             - name: Install dependencies
-              if: steps.version.outputs.IS_NEW_VERSION == 'true'
               run: yarn --frozen-lockfile
 
             - name: Publish the package in the npm registry
-              if: steps.version.outputs.IS_NEW_VERSION == 'true'
-              run: yarn publish --access public
+              run: npm publish --access public
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Create GitHub release
-              if: steps.version.outputs.IS_NEW_VERSION == 'true'
               uses: actions/create-release@v1
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                  tag_name: ${{ env.PACKAGE_VERSION_TAG }}
-                  release_name: ${{ env.PACKAGE_VERSION }}
-
-            - name: Switch to the GitHub registry
-              if: steps.version.outputs.IS_NEW_VERSION == 'true'
-              uses: actions/setup-node@v2
-              with:
-                  node-version: 14
-                  registry-url: https://npm.pkg.github.com
-
-            - name: Publish the package in the GitHub registry
-              if: steps.version.outputs.IS_NEW_VERSION == 'true'
-              run: yarn publish --access public
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  tag_name: v${{ env.REPO_VERSION }}
+                  release_name: ${{ env.REPO_VERSION }}
