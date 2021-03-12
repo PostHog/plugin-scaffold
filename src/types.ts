@@ -1,17 +1,17 @@
 /** A PostHog plugin. */
-export interface Plugin {
+export interface Plugin<Meta extends PluginMeta> {
     /** Ran when the plugin is loaded by the PostHog plugin server. */
-    setupPlugin?: (meta: PluginMeta) => void
+    setupPlugin?: (meta: Meta) => void
     /** Receive a single event and return it in its processed form. You can discard the event by returning null. */
-    processEvent?: (event: PluginEvent, meta: PluginMeta) => PluginEvent | null | Promise<PluginEvent | null>
+    processEvent?: (event: PluginEvent, meta: Meta) => PluginEvent | null | Promise<PluginEvent | null>
     /** Receive a batch of events and return it in its processed form. You can discard events by not including them in the returned array. You can also append additional events to the returned array. */
-    processEventBatch?: (eventBatch: PluginEvent[], meta: PluginMeta) => PluginEvent[] | Promise<PluginEvent[]>
+    processEventBatch?: (eventBatch: PluginEvent[], meta: Meta) => PluginEvent[] | Promise<PluginEvent[]>
     /** Ran every minute, on the minute. */
-    runEveryMinute?: (meta: PluginMeta) => void
+    runEveryMinute?: (meta: Meta) => void
     /** Ran every hour, on the hour. */
-    runEveryHour?: (meta: PluginMeta) => void
+    runEveryHour?: (meta: Meta) => void
     /** Ran every day, on midnight. */
-    runEveryDay?: (meta: PluginMeta) => void
+    runEveryDay?: (meta: Meta) => void
 }
 
 export type Properties = Record<string, any>
