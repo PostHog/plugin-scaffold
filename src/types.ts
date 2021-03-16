@@ -71,9 +71,15 @@ export interface PluginConfigChoice extends PluginConfigStructure {
 
 export type PluginConfigSchema = PluginConfigDefault | PluginConfigChoice
 
+/** Additional cache set/get options. */
+export interface CacheOptions {
+    /** Whether input should be JSON-stringified/parsed. */
+    jsonSerialize?: boolean
+}
+
 export interface CacheExtension {
-    set: (key: string, value: unknown, ttlSeconds?: number, jsonStringify?: boolean) => Promise<void>
-    get: (key: string, defaultValue: unknown, jsonParse?: boolean) => Promise<unknown>
+    set: (key: string, value: unknown, ttlSeconds?: number, options?: CacheOptions) => Promise<void>
+    get: (key: string, defaultValue: unknown, options?: CacheOptions) => Promise<unknown>
     incr: (key: string) => Promise<number>
     expire: (key: string, ttlSeconds: number) => Promise<boolean>
 }
