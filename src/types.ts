@@ -1,7 +1,7 @@
 import { City } from '@maxmind/geoip2-node'
 
 /** A PostHog plugin. */
-export interface Plugin<Meta extends PluginMeta> {
+export interface Plugin<Meta extends PluginMeta = PluginMeta> {
     /** Ran when the plugin is loaded by the PostHog plugin server. */
     setupPlugin?: (meta: Meta) => void
     /** Receive a single event and return it in its processed form. You can discard the event by returning null. */
