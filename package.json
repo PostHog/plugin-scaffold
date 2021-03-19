@@ -10,5 +10,8 @@
     "homepage": "https://github.com/PostHog/plugin-scaffold#readme",
     "license": "MIT",
     "main": "src/types.ts",
-    "types": "src/types.ts"
+    "types": "src/types.ts",
+    "devDependencies": {
+        "@maxmind/geoip2-node": "^2.3.1"
+    }
 }

@@ -1,3 +1,5 @@
+import { City } from '@maxmind/geoip2-node'
+
 /** A PostHog plugin. */
 export interface Plugin<Meta extends PluginMeta> {
     /** Ran when the plugin is loaded by the PostHog plugin server. */
@@ -46,6 +48,7 @@ export interface PluginAttachment {
 export interface PluginMeta {
     cache: CacheExtension
     storage: StorageExtension
+    geoip: GeoIPExtension
     config: Record<string, any>
 }
 
@@ -95,4 +98,8 @@ export interface ConsoleExtension {
     debug: (...args: unknown[]) => void
     info: (...args: unknown[]) => void
     warn: (...args: unknown[]) => void
+}
+
+export interface GeoIPExtension {
+    locate: (ip: string) => City | null
 }
