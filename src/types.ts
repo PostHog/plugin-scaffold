@@ -101,5 +101,5 @@ export interface ConsoleExtension {
 }
 
 export interface GeoIPExtension {
-    locate: (ip: string) => City | null
+    locate: (ip: string) => Promise<City | null>
 }
