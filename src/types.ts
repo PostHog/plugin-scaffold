@@ -27,6 +27,7 @@ export interface PluginEvent {
     properties?: Properties
     timestamp?: string
     offset?: number
+    data?: Record<string, any>
     /** Person properties update (override). */
     $set?: Properties
     /** Person properties update (if not set). */
