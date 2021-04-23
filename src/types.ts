@@ -50,6 +50,7 @@ export interface PluginMeta {
     storage: StorageExtension
     geoip: GeoIPExtension
     config: Record<string, any>
+    global: Record<string, any>
 }
 
 export interface PluginConfigStructure {
