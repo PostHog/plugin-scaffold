@@ -4,6 +4,8 @@ import { City } from '@maxmind/geoip2-node'
 export interface Plugin<Meta extends PluginMeta = PluginMeta> {
     /** Ran when the plugin is loaded by the PostHog plugin server. */
     setupPlugin?: (meta: Meta) => void
+    /** Ran when the plugin is unloaded by the PostHog plugin server. */
+    teardownPlugin?: (meta: Meta) => void
     /** Receive a single event and return it in its processed form. You can discard the event by returning null. */
     processEvent?: (event: PluginEvent, meta: Meta) => PluginEvent | null | Promise<PluginEvent | null>
     /** Receive a batch of events and return it in its processed form. You can discard events by not including them in the returned array. You can also append additional events to the returned array. */
