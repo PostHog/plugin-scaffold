@@ -55,6 +55,40 @@ export interface PluginMeta {
     global: Record<string, any>
 }
 
+type JobFunction = (opts?: any) => any
+
+type MetaInput = {
+    config?: Record<string, any>
+    attachments?: Record<string, PluginAttachment>
+    global?: Record<string, any>
+    jobs?: Record<string, (opts?: any) => any>
+}
+
+type JobRunnerObject<J extends Record<string, JobFunction>> = {
+    runNow: () => J
+    runIn: (duration: number, unit: string) => J
+}
+
+type CreatePluginMetaBase<Input extends MetaInput> = PluginMeta & {
+    config: Input['config']
+    attachments: Input['attachments']
+    global: Input['global']
+    jobs: Input['jobs']
+}
+
+export type CreatePluginMeta<Input extends MetaInput> = Omit<CreatePluginMetaBase<Input>, 'jobs'> & {
+    jobs: JobRunnerObject<CreatePluginMetaBase<Input>['jobs']>
+}
+
+type AddMetaToJob<M extends PluginMeta, F extends JobFunction> = (opts: Parameters<F>[0], meta: M) => ReturnType<F>
+type AddMetaToJobs<M extends PluginMeta, J extends Record<string, JobFunction>> = {
+    [K in keyof J]: AddMetaToJob<M, J[K]>
+}
+
+export type MetaJobsInput<
+    Meta extends PluginMeta & { jobs: JobRunnerObject<Record<string, JobFunction>> }
+> = AddMetaToJobs<Meta, ReturnType<Meta['jobs']['runNow']>>
+
 export interface PluginConfigStructure {
     key?: string
     name?: string
@@ -68,7 +102,7 @@ export interface PluginConfigStructure {
 
 export interface PluginConfigDefault extends PluginConfigStructure {
     type?: 'string' | 'attachment'
-} 
+}
 
 export interface PluginConfigChoice extends PluginConfigStructure {
     type: 'choice'
