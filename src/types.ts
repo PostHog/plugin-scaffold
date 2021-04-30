@@ -61,7 +61,7 @@ type MetaInput = {
     config?: Record<string, any>
     attachments?: Record<string, PluginAttachment>
     global?: Record<string, any>
-    jobs?: Record<string, (opts?: any) => any>
+    jobs?: Record<string, JobFunction>
 }
 
 type JobRunnerObject<J extends Record<string, JobFunction>> = {
