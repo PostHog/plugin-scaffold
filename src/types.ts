@@ -53,41 +53,41 @@ export interface PluginMeta {
     geoip: GeoIPExtension
     config: Record<string, any>
     global: Record<string, any>
+    attachments: Record<string, PluginAttachment | undefined>
+    jobs: Record<string, (opts: any) => JobControls>
 }
 
-type JobFunction = (opts?: any) => any
+type JobOptions = Record<string, any> | undefined
 
 type MetaInput = {
     config?: Record<string, any>
-    attachments?: Record<string, PluginAttachment>
+    attachments?: Record<string, PluginAttachment | undefined>
     global?: Record<string, any>
-    jobs?: Record<string, JobFunction>
+    jobs?: Record<string, JobOptions>
 }
 
-type JobRunnerObject<J extends Record<string, JobFunction>> = {
-    runNow: () => J
-    runIn: (duration: number, unit: string) => J
+type JobControls = {
+    runNow: () => Promise<void>
+    runIn: (duration: number, unit: string) => Promise<void>
+    runAt: (date: Date) => Promise<void>
 }
 
-type CreatePluginMetaBase<Input extends MetaInput> = PluginMeta & {
+type MetaJobsFromJobOptions<J extends Record<string, JobOptions>> = {
+    [K in keyof J]: (opts: J[K]) => JobControls
+}
+
+export type CreatePluginMeta<Input extends MetaInput> = PluginMeta & {
     config: Input['config']
     attachments: Input['attachments']
     global: Input['global']
-    jobs: Input['jobs']
+    jobs: Input['jobs'] extends Record<string, JobOptions>
+        ? MetaJobsFromJobOptions<Input['jobs']>
+        : Record<string, (opts: any) => JobControls>
 }
 
-export type CreatePluginMeta<Input extends MetaInput> = Omit<CreatePluginMetaBase<Input>, 'jobs'> & {
-    jobs: JobRunnerObject<CreatePluginMetaBase<Input>['jobs']>
+export type MetaJobsInput<M extends PluginMeta> = {
+    [K in keyof M['jobs']]: (opts: Parameters<M['jobs'][K]>[0], meta: M) => void | Promise<void>
 }
-
-type AddMetaToJob<M extends PluginMeta, F extends JobFunction> = (opts: Parameters<F>[0], meta: M) => ReturnType<F>
-type AddMetaToJobs<M extends PluginMeta, J extends Record<string, JobFunction>> = {
-    [K in keyof J]: AddMetaToJob<M, J[K]>
-}
-
-export type MetaJobsInput<
-    Meta extends PluginMeta & { jobs: JobRunnerObject<Record<string, JobFunction>> }
-> = AddMetaToJobs<Meta, ReturnType<Meta['jobs']['runNow']>>
 
 export interface PluginConfigStructure {
     key?: string
