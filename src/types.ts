@@ -1,7 +1,7 @@
 import { City } from '@maxmind/geoip2-node'
 
 /** A PostHog plugin. */
-export interface Plugin<Meta extends PluginMeta = PluginMeta> {
+export interface Plugin<Meta extends BasePluginMeta = BasePluginMeta> {
     /** Ran when the plugin is loaded by the PostHog plugin server. */
     setupPlugin?: (meta: Meta) => void
     /** Ran when the plugin is unloaded by the PostHog plugin server. */
@@ -47,12 +47,46 @@ export interface PluginAttachment {
     contents: any
 }
 
-export interface PluginMeta {
+interface BasePluginMeta {
     cache: CacheExtension
     storage: StorageExtension
     geoip: GeoIPExtension
     config: Record<string, any>
     global: Record<string, any>
+    attachments: Record<string, PluginAttachment | undefined>
+    jobs: Record<string, (opts: any) => JobControls>
+}
+
+type JobOptions = Record<string, any> | undefined
+
+type MetaInput = {
+    config?: Record<string, any>
+    attachments?: Record<string, PluginAttachment | undefined>
+    global?: Record<string, any>
+    jobs?: Record<string, JobOptions>
+}
+
+type JobControls = {
+    runNow: () => Promise<void>
+    runIn: (duration: number, unit: string) => Promise<void>
+    runAt: (date: Date) => Promise<void>
+}
+
+type MetaJobsFromJobOptions<J extends Record<string, JobOptions>> = {
+    [K in keyof J]: (opts: J[K]) => JobControls
+}
+
+export interface PluginMeta<Input extends MetaInput = {}> extends BasePluginMeta {
+    config: Input['config']
+    attachments: Input['attachments']
+    global: Input['global']
+    jobs: Input['jobs'] extends Record<string, JobOptions>
+        ? MetaJobsFromJobOptions<Input['jobs']>
+        : Record<string, (opts: any) => JobControls>
+}
+
+export type PluginJobs<M extends BasePluginMeta> = {
+    [K in keyof M['jobs']]: (opts: Parameters<M['jobs'][K]>[0], meta: M) => void | Promise<void>
 }
 
 export interface PluginConfigStructure {
@@ -68,7 +102,7 @@ export interface PluginConfigStructure {
 
 export interface PluginConfigDefault extends PluginConfigStructure {
     type?: 'string' | 'attachment'
-} 
+}
 
 export interface PluginConfigChoice extends PluginConfigStructure {
     type: 'choice'
