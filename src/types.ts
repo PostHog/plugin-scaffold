@@ -77,9 +77,11 @@ type MetaJobsFromJobOptions<J extends Record<string, JobOptions>> = {
 }
 
 export interface PluginMeta<Input extends MetaInput = {}> extends BasePluginMeta {
-    config: Input['config']
-    attachments: Input['attachments']
-    global: Input['global']
+    attachments: Input['attachments'] extends Record<string, PluginAttachment | undefined>
+        ? Input['attachments']
+        : Record<string, PluginAttachment | undefined>
+    config: Input['config'] extends Record<string, any> ? Input['config'] : Record<string, any>
+    global: Input['global'] extends Record<string, any> ? Input['global'] : Record<string, any>
     jobs: Input['jobs'] extends Record<string, JobOptions>
         ? MetaJobsFromJobOptions<Input['jobs']>
         : Record<string, (opts: any) => JobControls>
