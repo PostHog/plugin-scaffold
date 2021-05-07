@@ -1,7 +1,7 @@
 import { City } from '@maxmind/geoip2-node'
 
 /** A PostHog plugin. */
-export interface Plugin<Meta extends PluginMeta = PluginMeta> {
+export interface Plugin<Meta extends BasePluginMeta = BasePluginMeta> {
     /** Ran when the plugin is loaded by the PostHog plugin server. */
     setupPlugin?: (meta: Meta) => void
     /** Ran when the plugin is unloaded by the PostHog plugin server. */
@@ -47,7 +47,7 @@ export interface PluginAttachment {
     contents: any
 }
 
-export interface PluginMeta {
+interface BasePluginMeta {
     cache: CacheExtension
     storage: StorageExtension
     geoip: GeoIPExtension
@@ -76,7 +76,7 @@ type MetaJobsFromJobOptions<J extends Record<string, JobOptions>> = {
     [K in keyof J]: (opts: J[K]) => JobControls
 }
 
-export type CreatePluginMeta<Input extends MetaInput> = PluginMeta & {
+export interface PluginMeta<Input extends MetaInput = {}> extends BasePluginMeta {
     config: Input['config']
     attachments: Input['attachments']
     global: Input['global']
@@ -85,7 +85,7 @@ export type CreatePluginMeta<Input extends MetaInput> = PluginMeta & {
         : Record<string, (opts: any) => JobControls>
 }
 
-export type MetaJobsInput<M extends PluginMeta> = {
+export type PluginJobs<M extends BasePluginMeta> = {
     [K in keyof M['jobs']]: (opts: Parameters<M['jobs'][K]>[0], meta: M) => void | Promise<void>
 }
 
