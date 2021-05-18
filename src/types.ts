@@ -1,22 +1,46 @@
 import { City } from '@maxmind/geoip2-node'
 
-/** A PostHog plugin. */
-export interface Plugin<Meta extends BasePluginMeta = BasePluginMeta> {
-    /** Ran when the plugin is loaded by the PostHog plugin server. */
-    setupPlugin?: (meta: Meta) => void
-    /** Ran when the plugin is unloaded by the PostHog plugin server. */
-    teardownPlugin?: (meta: Meta) => void
-    /** Receive a single event and return it in its processed form. You can discard the event by returning null. */
-    processEvent?: (event: PluginEvent, meta: Meta) => PluginEvent | null | Promise<PluginEvent | null>
-    /** Receive a batch of events and return it in its processed form. You can discard events by not including them in the returned array. You can also append additional events to the returned array. */
-    processEventBatch?: (eventBatch: PluginEvent[], meta: Meta) => PluginEvent[] | Promise<PluginEvent[]>
-    /** Ran every minute, on the minute. */
-    runEveryMinute?: (meta: Meta) => void
-    /** Ran every hour, on the hour. */
-    runEveryHour?: (meta: Meta) => void
-    /** Ran every day, on midnight. */
-    runEveryDay?: (meta: Meta) => void
+/** Input for a PostHog plugin. */
+export type PluginInput = {
+    config?: Record<string, any>
+    attachments?: Record<string, PluginAttachment | undefined>
+    global?: Record<string, any>
+    jobs?: Record<string, JobOptions>
 }
+
+/** A PostHog plugin. */
+export interface Plugin<Input extends PluginInput = {}> {
+    /** Ran when the plugin is loaded by the PostHog plugin server. */
+    setupPlugin?: (meta: Meta<Input>) => void
+    /** Ran when the plugin is unloaded by the PostHog plugin server. */
+    teardownPlugin?: (meta: Meta<Input>) => void
+    /** Receive a single non-snapshot event and return it in its processed form. You can discard the event by returning null. */
+    processEvent?: (event: PluginEvent, meta: Meta<Input>) => PluginEvent | null | Promise<PluginEvent | null>
+    /** DEPRECATED: Receive a batch of events and return it in its processed form. You can discard events by not including them in the returned array. You can also append additional events to the returned array. */
+    processEventBatch?: (eventBatch: PluginEvent[], meta: Meta<Input>) => PluginEvent[] | Promise<PluginEvent[]>
+    /** Receive a single non-snapshot event.  */
+    onEvent?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
+    /** Receive a single snapshot (session recording) event. */
+    onSnapshot?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
+    /** Ran every minute, on the minute. */
+    runEveryMinute?: (meta: Meta<Input>) => void
+    /** Ran every hour, on the hour. */
+    runEveryHour?: (meta: Meta<Input>) => void
+    /** Ran every day, on midnight. */
+    runEveryDay?: (meta: Meta<Input>) => void
+    /** Asynchronous jobs that can be scheduled. */
+    jobs?: {
+        [K in keyof Meta<Input>['jobs']]: (
+            opts: Parameters<Meta<Input>['jobs'][K]>[0],
+            meta: Meta<Input>
+        ) => void | Promise<void>
+    }
+
+    // used for type resolution only, does not exist
+    __internalMeta?: Meta<Input>
+}
+
+export type PluginMeta<T> = T extends { __internalMeta?: infer M } ? M : never
 
 export type Properties = Record<string, any>
 
@@ -59,13 +83,6 @@ interface BasePluginMeta {
 
 type JobOptions = Record<string, any> | undefined
 
-type MetaInput = {
-    config?: Record<string, any>
-    attachments?: Record<string, PluginAttachment | undefined>
-    global?: Record<string, any>
-    jobs?: Record<string, JobOptions>
-}
-
 type JobControls = {
     runNow: () => Promise<void>
     runIn: (duration: number, unit: string) => Promise<void>
@@ -76,7 +93,7 @@ type MetaJobsFromJobOptions<J extends Record<string, JobOptions>> = {
     [K in keyof J]: (opts: J[K]) => JobControls
 }
 
-export interface PluginMeta<Input extends MetaInput = {}> extends BasePluginMeta {
+export interface Meta<Input extends PluginInput = {}> extends BasePluginMeta {
     attachments: Input['attachments'] extends Record<string, PluginAttachment | undefined>
         ? Input['attachments']
         : Record<string, PluginAttachment | undefined>
@@ -85,10 +102,6 @@ export interface PluginMeta<Input extends MetaInput = {}> extends BasePluginMeta
     jobs: Input['jobs'] extends Record<string, JobOptions>
         ? MetaJobsFromJobOptions<Input['jobs']>
         : Record<string, (opts: any) => JobControls>
-}
-
-export type PluginJobs<M extends BasePluginMeta> = {
-    [K in keyof M['jobs']]: (opts: Parameters<M['jobs'][K]>[0], meta: M) => void | Promise<void>
 }
 
 export interface PluginConfigStructure {
