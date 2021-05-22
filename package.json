@@ -1,6 +1,6 @@
 {
     "name": "@posthog/plugin-scaffold",
-    "version": "0.9.0",
+    "version": "0.10.0",
     "description": "Types and utilities for PostHog Plugins",
     "author": "PostHog <hey@posthog.com>",
     "repository": "github:PostHog/plugin-scaffold",
