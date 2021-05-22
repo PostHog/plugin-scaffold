@@ -9,7 +9,7 @@
     },
     "homepage": "https://github.com/PostHog/plugin-scaffold#readme",
     "license": "MIT",
-    "main": "src/types.ts",
+    "main": "src/index.ts",
     "types": "src/types.ts",
     "dependencies": {
         "@maxmind/geoip2-node": "^2.3.1"
