@@ -19,6 +19,7 @@ export interface Plugin<Input extends PluginInput = {}> {
     /** DEPRECATED: Receive a batch of events and return it in its processed form. You can discard events by not including them in the returned array. You can also append additional events to the returned array. */
     processEventBatch?: (eventBatch: PluginEvent[], meta: Meta<Input>) => PluginEvent[] | Promise<PluginEvent[]>
     /** Receive a single non-snapshot event.  */
+    exportEvents?: (events: PluginEvent[], meta: Meta<Input>) => void | Promise<void>
     onEvent?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Receive a single snapshot (session recording) event. */
     onSnapshot?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
