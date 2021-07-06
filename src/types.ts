@@ -103,9 +103,6 @@ export interface Meta<Input extends PluginInput = {}> extends BasePluginMeta {
     jobs: Input['jobs'] extends Record<string, JobOptions>
         ? MetaJobsFromJobOptions<Input['jobs']>
         : Record<string, (opts: any) => JobControls>
-    metrics: Input['metrics'] extends Record<string, JobOptions>
-        ? MetaMetricsFromMetricsOptions<Input['metrics']>
-        : Record<string, (opts: any) => Partial<MetricsOperations>>
 }
 
 
