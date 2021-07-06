@@ -103,8 +103,14 @@ export interface Meta<Input extends PluginInput = {}> extends BasePluginMeta {
     jobs: Input['jobs'] extends Record<string, JobOptions>
         ? MetaJobsFromJobOptions<Input['jobs']>
         : Record<string, (opts: any) => JobControls>
+    metrics: Input['metrics'] extends Record<string, JobOptions>
+        ? MetaMetricsFromMetricsOptions<Input['metrics']>
+        : Record<string, (opts: any) => Partial<MetricsOperations>>
 }
 
+
+type ConfigDependencySubArray = Array<string|undefined>
+type ConfigDependencyArray = Array<ConfigDependencySubArray>
 export interface PluginConfigStructure {
     key?: string
     name?: string
@@ -114,6 +120,8 @@ export interface PluginConfigStructure {
     order?: number
     required?: boolean
     secret?: boolean
+    required_if?: ConfigDependencyArray
+    visible_if?: ConfigDependencyArray
 }
 
 export interface PluginConfigDefault extends PluginConfigStructure {
