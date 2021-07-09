@@ -138,6 +138,9 @@ export interface CacheExtension {
     get: (key: string, defaultValue: unknown, options?: CacheOptions) => Promise<unknown>
     incr: (key: string) => Promise<number>
     expire: (key: string, ttlSeconds: number) => Promise<boolean>
+    lpush: (key: string, elementOrArray: unknown[]) => Promise<number>
+    lrange: (key: string, startIndex: number, endIndex: number) => Promise<string[]>
+    llen: (key: string) => Promise<number>
 }
 
 export interface StorageExtension {
