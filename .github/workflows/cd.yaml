@@ -90,7 +90,7 @@ jobs:
                   fetch-depth: 0
 
             - name: Install new plugin-scaffold version in main repo
-              id: yarn-upgrade
+              id: yarn-upgrade-posthog
               run: |
                   cd posthog/
                   OUTGOING_VERSION=$(jq '.dependencies["@posthog/plugin-scaffold"]' package.json -r)
@@ -108,7 +108,7 @@ jobs:
                   RETRY_WAIT_SECONDS: 5
 
             - name: Install new plugin-scaffold version in plugin-server repo
-              id: yarn-upgrade
+              id: yarn-upgrade-plugin-server
               run: |
                   cd plugin-server/
                   OUTGOING_VERSION=$(jq '.dependencies["@posthog/plugin-scaffold"]' package.json -r)
