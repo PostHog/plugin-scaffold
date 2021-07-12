@@ -107,6 +107,24 @@ jobs:
                   RETRY_TIMES: 20
                   RETRY_WAIT_SECONDS: 5
 
+            - name: Install new plugin-scaffold version in plugin-server repo
+              id: yarn-upgrade
+              run: |
+                  cd plugin-server/
+                  OUTGOING_VERSION=$(jq '.dependencies["@posthog/plugin-scaffold"]' package.json -r)
+                  echo "::set-output name=outgoing-version::$OUTGOING_VERSION"
+                  for i in $(seq 1 $RETRY_TIMES); do
+                      # Retry loop because of npm being _eventually_ consistent
+                      if yarn upgrade @posthog/plugin-scaffold@${{ env.REPO_VERSION }}; then
+                          break
+                      else
+                          [ $i -ne $RETRY_TIMES ] && sleep $RETRY_WAIT_SECONDS || false
+                      fi
+                  done
+              env:
+                  RETRY_TIMES: 20
+                  RETRY_WAIT_SECONDS: 5
+
             - name: Determine changelog
               id: changelog
               run: |
