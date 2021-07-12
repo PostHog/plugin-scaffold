@@ -61,7 +61,7 @@ jobs:
                   tag_name: v${{ env.REPO_VERSION }}
                   release_name: ${{ env.REPO_VERSION }}
 
-    create-pull-request:
+    create-pull-requests:
         name: Create main repo PR with new plugin-scaffold version
         runs-on: ubuntu-20.04
         needs: [check-package-version, release]
@@ -74,6 +74,13 @@ jobs:
               with:
                   path: posthog
                   repository: PostHog/posthog
+                  token: ${{ secrets.POSTHOG_BOT_GITHUB_TOKEN }}
+
+            - name: Check out plugin-server repo
+              uses: actions/checkout@v2
+              with:
+                  path: plugin-server
+                  repository: PostHog/plugin-server
                   token: ${{ secrets.POSTHOG_BOT_GITHUB_TOKEN }}
 
             - name: Check out plugin-scaffold repo
@@ -110,12 +117,33 @@ jobs:
                   PULL_REQUESTS="${PULL_REQUESTS//$'\n'/'%0A'}"
                   PULL_REQUESTS="${PULL_REQUESTS//$'\r'/'%0D'}"
                   echo "::set-output name=pull-requests::$PULL_REQUESTS"
+
             - name: Create main repo pull request
               id: main-repo-pr
               uses: peter-evans/create-pull-request@v3
               with:
                   token: ${{ secrets.POSTHOG_BOT_GITHUB_TOKEN }}
                   path: posthog
+                  commit-message: Update plugin-scaffold to ${{ env.REPO_VERSION }}
+                  branch: plugin-scaffold-${{ env.REPO_VERSION }}
+                  delete-branch: true
+                  title: Update plugin-scaffold to ${{ env.REPO_VERSION }}
+                  labels: automerge
+                  body: |
+                      ## Changes
+                      plugin-scaffold version ${{ env.REPO_VERSION }} has been released. This updates PostHog to use it.
+                      https://github.com/PostHog/plugin-scaffold/compare/v${{ steps.yarn-upgrade.outputs.outgoing-version }}...v${{ env.REPO_VERSION }}:
+                      ${{ steps.changelog.outputs.pull-requests }}
+            - name: Output pull request result
+              run: |
+                  echo "PostHog pull request for plugin-scaffold version ${{ env.REPO_VERSION }} ready: ${{ steps.main-repo-pr.outputs.pull-request-url }}"
+
+            - name: Create plugin-server repo pull request
+              id: plugin-server-repo-pr
+              uses: peter-evans/create-pull-request@v3
+              with:
+                  token: ${{ secrets.POSTHOG_BOT_GITHUB_TOKEN }}
+                  path: plugin-server
                   commit-message: Update plugin-scaffold to ${{ env.REPO_VERSION }}
                   branch: plugin-scaffold-${{ env.REPO_VERSION }}
                   delete-branch: true
