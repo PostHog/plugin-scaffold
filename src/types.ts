@@ -105,9 +105,9 @@ export interface Meta<Input extends PluginInput = {}> extends BasePluginMeta {
         : Record<string, (opts: any) => JobControls>
 }
 
-
-type ConfigDependencySubArray = Array<string|undefined>
-type ConfigDependencyArray = Array<ConfigDependencySubArray>
+type ConfigDependencyArrayValue = string | undefined
+type ConfigDependencySubArray = ConfigDependencyArrayValue[]
+type ConfigDependencyArray = ConfigDependencySubArray[]
 export interface PluginConfigStructure {
     key?: string
     name?: string
