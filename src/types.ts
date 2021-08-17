@@ -117,7 +117,9 @@ interface MetricsControlsMin {
 
 type FullMetricsControls = MetricsControlsIncrement & MetricsControlsMax & MetricsControlsMin
 
-type MetricsControls<V> = V extends MetricsOperation.Sum ? MetricsControlsIncrement : V extends MetricsOperation.Max ? MetricsControlsMax : MetricsControlsMin
+type MetricsControls<V> = V extends MetricsOperation.Sum ? MetricsControlsIncrement : 
+    V extends MetricsOperation.Max ? MetricsControlsMax 
+    : MetricsControlsMin
 
 type MetaMetricsFromMetricsOptions<J extends Record<string, string>> = {
     [K in keyof J]: MetricsControls<J[K]>
