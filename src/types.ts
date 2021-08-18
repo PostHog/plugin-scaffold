@@ -146,6 +146,8 @@ export interface CacheExtension {
     lpush: (key: string, elementOrArray: unknown[]) => Promise<number>
     lrange: (key: string, startIndex: number, endIndex: number) => Promise<string[]>
     llen: (key: string) => Promise<number>
+    lpop: (key: string, count: number) => Promise<string[]>
+    lrem: (key: string, count: number, elementKey: string) => Promise<number>
 }
 
 export interface StorageExtension {
