@@ -191,6 +191,7 @@ export interface CacheExtension {
 export interface StorageExtension {
     set: (key: string, value: unknown) => Promise<void>
     get: (key: string, defaultValue: unknown) => Promise<unknown>
+    del: (key: string) => Promise<void>
 }
 
 export interface ConsoleExtension {
