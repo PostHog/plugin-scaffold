@@ -6,6 +6,7 @@ export type PluginInput = {
     attachments?: Record<string, PluginAttachment | undefined>
     global?: Record<string, any>
     jobs?: Record<string, JobOptions>
+    metrics?: Record<string, AllowedMetricsOperations>
 }
 
 /** A PostHog plugin. */
@@ -36,10 +37,21 @@ export interface Plugin<Input extends PluginInput = {}> {
             meta: Meta<Input>
         ) => void | Promise<void>
     }
-
+    /** Metrics about plugin performance that can be set by plugin devs */
+    metrics?: {
+        [K in keyof Meta<Input>['metrics']]: AllowedMetricsOperations
+    }
     // used for type resolution only, does not exist
     __internalMeta?: Meta<Input>
 }
+
+export enum MetricsOperation {
+    Sum = 'sum',
+    Min = 'min',
+    Max = 'max'
+}
+
+export type AllowedMetricsOperations = MetricsOperation.Sum | MetricsOperation.Max | MetricsOperation.Min
 
 export type PluginMeta<T> = T extends { __internalMeta?: infer M } ? M : never
 
@@ -80,6 +92,7 @@ interface BasePluginMeta {
     global: Record<string, any>
     attachments: Record<string, PluginAttachment | undefined>
     jobs: Record<string, (opts: any) => JobControls>
+    metrics: Record<string, Partial<FullMetricsControls>>
 }
 
 type JobOptions = Record<string, any> | undefined
@@ -88,6 +101,28 @@ type JobControls = {
     runNow: () => Promise<void>
     runIn: (duration: number, unit: string) => Promise<void>
     runAt: (date: Date) => Promise<void>
+}
+
+interface MetricsControlsIncrement {
+    increment: (value: number) => Promise<void>
+}
+
+interface MetricsControlsMax {
+    max: (value: number) => Promise<void>
+}
+
+interface MetricsControlsMin {
+    min: (value: number) => Promise<void>
+}
+
+type FullMetricsControls = MetricsControlsIncrement & MetricsControlsMax & MetricsControlsMin
+
+type MetricsControls<V> = V extends MetricsOperation.Sum ? MetricsControlsIncrement : 
+    V extends MetricsOperation.Max ? MetricsControlsMax 
+    : MetricsControlsMin
+
+type MetaMetricsFromMetricsOptions<J extends Record<string, string>> = {
+    [K in keyof J]: MetricsControls<J[K]>
 }
 
 type MetaJobsFromJobOptions<J extends Record<string, JobOptions>> = {
@@ -103,6 +138,9 @@ export interface Meta<Input extends PluginInput = {}> extends BasePluginMeta {
     jobs: Input['jobs'] extends Record<string, JobOptions>
         ? MetaJobsFromJobOptions<Input['jobs']>
         : Record<string, (opts: any) => JobControls>
+    metrics: Input['metrics'] extends Record<string, AllowedMetricsOperations>
+        ? MetaMetricsFromMetricsOptions<Input['metrics']>
+        : Record<string, FullMetricsControls>
 }
 
 type ConfigDependencyArrayValue = string | undefined
