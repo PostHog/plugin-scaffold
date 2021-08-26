@@ -93,6 +93,7 @@ interface BasePluginMeta {
     attachments: Record<string, PluginAttachment | undefined>
     jobs: Record<string, (opts: any) => JobControls>
     metrics: Record<string, Partial<FullMetricsControls>>
+    utils: UtilsExtension
 }
 
 type JobOptions = Record<string, any> | undefined
@@ -204,4 +205,13 @@ export interface ConsoleExtension {
 
 export interface GeoIPExtension {
     locate: (ip: string) => Promise<City | null>
+}
+
+export interface CursorUtils {
+    init: (key: string, initialValue?: number) => Promise<void>
+    increment: (key: string, incrementBy?: number) => Promise<number>
+}
+
+export interface UtilsExtension {
+    cursor: CursorUtils
 }
