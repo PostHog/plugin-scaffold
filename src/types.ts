@@ -207,11 +207,11 @@ export interface GeoIPExtension {
     locate: (ip: string) => Promise<City | null>
 }
 
+export interface UtilsExtension {
+    cursor: CursorUtils
+}
+
 export interface CursorUtils {
     init: (key: string, initialValue?: number) => Promise<void>
     increment: (key: string, incrementBy?: number) => Promise<number>
-}
-
-export interface UtilsExtension {
-    cursor: CursorUtils
 }
