@@ -161,7 +161,7 @@ export interface PluginConfigStructure {
 }
 
 export interface PluginConfigDefault extends PluginConfigStructure {
-    type?: 'string' | 'attachment'
+    type?: 'string' | 'json' | 'attachment'
 }
 
 export interface PluginConfigChoice extends PluginConfigStructure {
