@@ -217,7 +217,7 @@ export interface CursorUtils {
     increment: (key: string, incrementBy?: number) => Promise<number>
 }
 
-/** NB: The following should replace plugin-server/src/worker/vm/extensions/api.ts */
+/** NB: The following should replace types in plugin-server/src/worker/vm/extensions/api.ts */
 
 interface ApiMethodOptions {
     headers?: Headers
