@@ -1,4 +1,5 @@
 import { City } from '@maxmind/geoip2-node'
+import { Response } from 'node-fetch'
 
 /** Input for a PostHog plugin. */
 export type PluginInput = {
