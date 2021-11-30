@@ -1,4 +1,5 @@
 import { City } from '@maxmind/geoip2-node'
+import { Response } from 'node-fetch'
 
 /** Input for a PostHog plugin. */
 export type PluginInput = {
@@ -214,4 +215,28 @@ export interface UtilsExtension {
 export interface CursorUtils {
     init: (key: string, initialValue?: number) => Promise<void>
     increment: (key: string, incrementBy?: number) => Promise<number>
+}
+
+/** NB: The following should replace types in plugin-server/src/worker/vm/extensions/api.ts */
+
+interface ApiMethodOptions {
+    headers?: Headers
+    data?: Record<string, any>
+    host?: string
+    projectApiKey?: string
+    personalApiKey?: string
+}
+
+export interface ApiExtension {
+    get(path: string, options?: ApiMethodOptions): Promise<Response>
+    post(path: string, options?: ApiMethodOptions): Promise<Response>
+    put(path: string, options?: ApiMethodOptions): Promise<Response>
+    delete(path: string, options?: ApiMethodOptions): Promise<Response>
+}
+
+/** NB: The following should replace DummyPostHog in plugin-server/src/worker/vm/extensions/posthog.ts */
+
+export interface PostHogExtension {
+    capture(event: string, properties?: Record<string, any>): Promise<void>
+    api: ApiExtension
 }
