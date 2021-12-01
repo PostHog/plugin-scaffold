@@ -96,6 +96,13 @@ jobs:
                           [ $i -ne $RETRY_TIMES ] && sleep $RETRY_WAIT_SECONDS || false
                       fi
                   done
+                  for i in $(seq 1 $RETRY_TIMES); do
+                      if yarn --cwd plugin-server upgrade @posthog/plugin-scaffold@${{ env.REPO_VERSION }}; then
+                          break
+                      else
+                          [ $i -ne $RETRY_TIMES ] && sleep $RETRY_WAIT_SECONDS || false
+                      fi
+                  done
               env:
                   RETRY_TIMES: 20
                   RETRY_WAIT_SECONDS: 5
