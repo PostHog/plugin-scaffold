@@ -22,9 +22,12 @@ export interface Plugin<Input extends PluginInput = {}> {
     processEventBatch?: (eventBatch: PluginEvent[], meta: Meta<Input>) => PluginEvent[] | Promise<PluginEvent[]>
     /** Receive a single non-snapshot event.  */
     exportEvents?: (events: PluginEvent[], meta: Meta<Input>) => void | Promise<void>
+    /** Receive a single processed event. */
     onEvent?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Receive a single snapshot (session recording) event. */
     onSnapshot?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
+    /** Receive a single processed event that has been matched by an action. */
+    onAction?: (action: Action, event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Ran every minute, on the minute. */
     runEveryMinute?: (meta: Meta<Input>) => void
     /** Ran every hour, on the hour. */
@@ -83,6 +86,22 @@ export interface PluginAttachment {
     content_type: string
     file_name: string
     contents: any
+}
+
+export interface Action {
+    id: number
+    team_id: number
+    name: string | null
+    description: string
+    created_at: string
+    created_by_id: number | null
+    deleted: boolean
+    post_to_slack: boolean
+    slack_message_format: string
+    is_calculating: boolean
+    updated_at: string
+    last_calculated_at: string
+    steps: any[]
 }
 
 interface BasePluginMeta {
