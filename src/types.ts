@@ -23,11 +23,11 @@ export interface Plugin<Input extends PluginInput = {}> {
     /** Receive a single non-snapshot event.  */
     exportEvents?: (events: PluginEvent[], meta: Meta<Input>) => void | Promise<void>
     /** Receive a single processed event. */
-    onEvent?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
+    onEvent?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Receive a single snapshot (session recording) event. */
-    onSnapshot?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
+    onSnapshot?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Receive a single processed event that has been matched by an action. */
-    onAction?: (action: Action, event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
+    onAction?: (action: Action, event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Ran every minute, on the minute. */
     runEveryMinute?: (meta: Meta<Input>) => void
     /** Ran every hour, on the hour. */
@@ -61,6 +61,7 @@ export type PluginMeta<T> = T extends { __internalMeta?: infer M } ? M : never
 
 export type Properties = Record<string, any>
 
+// Raw event received by PostHog ingestion pipeline
 export interface PluginEvent {
     distinct_id: string
     ip: string | null
@@ -78,6 +79,22 @@ export interface PluginEvent {
     $set_once?: Properties
     /** The offset of the Kafka message this event was passed in (EE pipeline-only). */
     kafka_offset?: string
+    /** The assigned UUIDT of the event (EE pipeline-only). */
+    uuid?: string
+}
+
+// Event after being processed by PostHog ingestion pipeline.
+export interface ProcessedPluginEvent {
+    distinct_id: string
+    ip: string | null
+    team_id: number
+    event: string
+    properties: Properties
+    timestamp: string
+    /** Person properties update (override). */
+    $set?: Properties
+    /** Person properties update (if not set). */
+    $set_once?: Properties
     /** The assigned UUIDT of the event (EE pipeline-only). */
     uuid?: string
 }

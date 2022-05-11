@@ -7,6 +7,7 @@ function createEvent(changes = {}) {
         now: '2020-11-26T12:58:57.367Z',
         event: 'EVENT_TYPE',
         sent_at: '2020-11-26T12:58:58.453Z',
+        timestamp: '2020-11-26T12:58:58.453Z',
         ...changes,
     }
 }
