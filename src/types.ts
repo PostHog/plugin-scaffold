@@ -110,17 +110,8 @@ export interface Action {
     team_id: number
     name: string | null
     description: string
-    created_at: string
-    created_by_id: number | null
-    deleted: boolean
-    post_to_slack: boolean
-    slack_message_format: string
-    is_calculating: boolean
-    updated_at: string
-    last_calculated_at: string
     steps: any[]
 }
-
 interface BasePluginMeta {
     cache: CacheExtension
     storage: StorageExtension
