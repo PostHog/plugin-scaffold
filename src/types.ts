@@ -22,9 +22,12 @@ export interface Plugin<Input extends PluginInput = {}> {
     processEventBatch?: (eventBatch: PluginEvent[], meta: Meta<Input>) => PluginEvent[] | Promise<PluginEvent[]>
     /** Receive a single non-snapshot event.  */
     exportEvents?: (events: PluginEvent[], meta: Meta<Input>) => void | Promise<void>
-    onEvent?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
+    /** Receive a single processed event. */
+    onEvent?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Receive a single snapshot (session recording) event. */
-    onSnapshot?: (event: PluginEvent, meta: Meta<Input>) => void | Promise<void>
+    onSnapshot?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
+    /** Receive a single processed event that has been matched by an action. */
+    onAction?: (action: Action, event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Ran every minute, on the minute. */
     runEveryMinute?: (meta: Meta<Input>) => void
     /** Ran every hour, on the hour. */
@@ -58,6 +61,7 @@ export type PluginMeta<T> = T extends { __internalMeta?: infer M } ? M : never
 
 export type Properties = Record<string, any>
 
+// Raw event received by PostHog ingestion pipeline
 export interface PluginEvent {
     distinct_id: string
     ip: string | null
@@ -79,12 +83,35 @@ export interface PluginEvent {
     uuid?: string
 }
 
+// Event after being processed by PostHog ingestion pipeline.
+export interface ProcessedPluginEvent {
+    distinct_id: string
+    ip: string | null
+    team_id: number
+    event: string
+    properties: Properties
+    timestamp: string
+    /** Person properties update (override). */
+    $set?: Properties
+    /** Person properties update (if not set). */
+    $set_once?: Properties
+    /** The assigned UUIDT of the event (EE pipeline-only). */
+    uuid?: string
+}
+
 export interface PluginAttachment {
     content_type: string
     file_name: string
     contents: any
 }
 
+export interface Action {
+    id: number
+    team_id: number
+    name: string | null
+    description: string
+    steps: any[]
+}
 interface BasePluginMeta {
     cache: CacheExtension
     storage: StorageExtension
