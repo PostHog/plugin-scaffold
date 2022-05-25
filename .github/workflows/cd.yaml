@@ -124,10 +124,10 @@ jobs:
               with:
                   token: ${{ secrets.POSTHOG_BOT_GITHUB_TOKEN }}
                   path: posthog
-                  commit-message: Update plugin-scaffold to ${{ env.REPO_VERSION }}
+                  commit-message: 'chore(deps): Update plugin-scaffold to ${{ env.REPO_VERSION }}'
                   branch: plugin-scaffold-${{ env.REPO_VERSION }}
                   delete-branch: true
-                  title: Update plugin-scaffold to ${{ env.REPO_VERSION }}
+                  title: 'chore(deps): Update plugin-scaffold to ${{ env.REPO_VERSION }}'
                   labels: automerge
                   body: |
                       ## Changes
