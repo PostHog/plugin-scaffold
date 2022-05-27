@@ -61,7 +61,7 @@ export type PluginMeta<T> = T extends { __internalMeta?: infer M } ? M : never
 
 export type Properties = Record<string, any>
 
-// Raw event received by PostHog ingestion pipeline
+/** Raw event received by PostHog ingestion pipeline */
 export interface PluginEvent {
     distinct_id: string
     ip: string | null
@@ -77,13 +77,11 @@ export interface PluginEvent {
     $set?: Properties
     /** Person properties update (if not set). */
     $set_once?: Properties
-    /** The offset of the Kafka message this event was passed in (EE pipeline-only). */
-    kafka_offset?: string
-    /** The assigned UUIDT of the event (EE pipeline-only). */
-    uuid?: string
+    /** The assigned UUIDT of the event. */
+    uuid: string
 }
 
-// Event after being processed by PostHog ingestion pipeline.
+/** Event after being processed by PostHog ingestion pipeline. */
 export interface ProcessedPluginEvent {
     distinct_id: string
     ip: string | null
@@ -95,8 +93,8 @@ export interface ProcessedPluginEvent {
     $set?: Properties
     /** Person properties update (if not set). */
     $set_once?: Properties
-    /** The assigned UUIDT of the event (EE pipeline-only). */
-    uuid?: string
+    /** The assigned UUIDT of the event. */
+    uuid: string
 }
 
 export interface PluginAttachment {
