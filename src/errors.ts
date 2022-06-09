@@ -1,1 +1,6 @@
-export class RetryError extends Error {}
+export class RetryError extends Error {
+    constructor(message?: string, options?: ErrorOptions) {
+        super(message, options)
+        this.name = "RetryError"
+    }
+}
