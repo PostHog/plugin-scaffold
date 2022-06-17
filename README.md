@@ -17,9 +17,9 @@ npm install --save-dev @posthog/plugin-scaffold
 Then in your plugins:
 
 ```typescript
-import { PluginEvent, PluginMeta } from '@posthog/plugin-scaffold'
+import { PluginEvent, PluginInput, PluginMeta } from "@posthog/plugin-scaffold";
 
-export function processEvent(event: PluginEvent, meta: PluginMeta) {
+export function processEvent(event: PluginEvent, meta: PluginMeta<PluginInput>) {
     if (event.properties) {
         event.properties['hello'] = 'world'
     }
