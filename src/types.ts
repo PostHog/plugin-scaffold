@@ -26,8 +26,6 @@ export interface Plugin<Input extends PluginInput = {}> {
     onEvent?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Receive a single snapshot (session recording) event. */
     onSnapshot?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
-    /** Receive a single processed event that has been matched by an action. */
-    onAction?: (action: Action, event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Ran every minute, on the minute. */
     runEveryMinute?: (meta: Meta<Input>) => void
     /** Ran every hour, on the hour. */
@@ -103,13 +101,6 @@ export interface PluginAttachment {
     contents: any
 }
 
-export interface Action {
-    id: number
-    team_id: number
-    name: string | null
-    description: string
-    steps: any[]
-}
 interface BasePluginMeta {
     cache: CacheExtension
     storage: StorageExtension
