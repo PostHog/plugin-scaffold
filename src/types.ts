@@ -77,6 +77,8 @@ export interface PluginEvent {
     $set_once?: Properties
     /** The assigned UUIDT of the event. */
     uuid: string
+    /** Person associated with the original distinct ID of the event. */
+    person: PluginPerson
 }
 
 /** Event after being processed by PostHog ingestion pipeline. */
@@ -93,6 +95,17 @@ export interface ProcessedPluginEvent {
     $set_once?: Properties
     /** The assigned UUIDT of the event. */
     uuid: string
+    /** Person associated with the original distinct ID of the event. */
+    person: PluginPerson
+}
+
+/** Person exposed to the plugin. */
+export interface PluginPerson {
+    uuid: string
+    team_id: number
+    properties: Properties
+    is_identified: boolean
+    created_at: string
 }
 
 export interface PluginAttachment {
