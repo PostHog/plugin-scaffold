@@ -104,7 +104,6 @@ export interface PluginPerson {
     uuid: string
     team_id: number
     properties: Properties
-    is_identified: boolean
     created_at: string
 }
 
