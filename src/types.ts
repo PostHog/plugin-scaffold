@@ -97,6 +97,9 @@ export interface ProcessedPluginEvent {
     uuid: string
     /** Person associated with the original distinct ID of the event. */
     person: PluginPerson
+    /** We process `$elements` out of `properties`, so we want to make sure we
+     * maintain this in the processed event that we pass to plugins */
+    elements?: Element[]
 }
 
 /** Person exposed to the plugin. */
