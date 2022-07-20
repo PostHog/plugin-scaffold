@@ -59,6 +59,21 @@ export type PluginMeta<T> = T extends { __internalMeta?: infer M } ? M : never
 
 export type Properties = Record<string, any>
 
+/** Usable Element model. */
+export interface Element {
+    text?: string
+    tag_name?: string
+    href?: string
+    attr_id?: string
+    attr_class?: string[]
+    nth_child?: number
+    nth_of_type?: number
+    attributes?: Record<string, any>
+    event_id?: number
+    order?: number
+    group_id?: number
+}
+
 /** Raw event received by PostHog ingestion pipeline */
 export interface PluginEvent {
     distinct_id: string
