@@ -93,7 +93,7 @@ export interface PluginEvent {
     /** The assigned UUIDT of the event. */
     uuid: string
     /** Person associated with the original distinct ID of the event. */
-    person: PluginPerson
+    person?: PluginPerson
 }
 
 /** Event after being processed by PostHog ingestion pipeline. */
@@ -111,7 +111,7 @@ export interface ProcessedPluginEvent {
     /** The assigned UUIDT of the event. */
     uuid: string
     /** Person associated with the original distinct ID of the event. */
-    person: PluginPerson
+    person?: PluginPerson
     /** We process `$elements` out of `properties`, so we want to make sure we
      * maintain this in the processed event that we pass to plugins */
     elements?: Element[]
