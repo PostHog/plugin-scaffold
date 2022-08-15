@@ -25,7 +25,7 @@
         "tsconfig.json"
     ],
     "dependencies": {
-        "@maxmind/geoip2-node": "^3.0.0"
+        "@maxmind/geoip2-node": "^3.4.0"
     },
     "devDependencies": {
         "@types/node": "^14.14.37",
