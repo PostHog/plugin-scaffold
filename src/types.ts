@@ -10,17 +10,30 @@ export type PluginInput = {
     metrics?: Record<string, AllowedMetricsOperations>
 }
 
+export type PluginSettings = {
+    /** Some plugins incurr high costs for small batches, e.g. S3. In these cases 
+        we want to signal that the plugin would prefer larger batches. There are other
+        plugins that may not be written to handle large batches, for these we will want 
+        to keep batches small to not break their behaviour.
+        
+        Defaults to `false`.
+    */
+    handlesLargeBatches: boolean
+}
+
 /** A PostHog plugin. */
 export interface Plugin<Input extends PluginInput = {}> {
     /** Ran when the plugin is loaded by the PostHog plugin server. */
     setupPlugin?: (meta: Meta<Input>) => void
     /** Ran when the plugin is unloaded by the PostHog plugin server. */
     teardownPlugin?: (meta: Meta<Input>) => void
+    /** Return settings to instruct the plugin-server how to call the plugin. e.g. what is the maximum events batch size it could be called with. */
+    getSettings?: (meta: Meta<Input>) => PluginSettings
     /** Receive a single non-snapshot event and return it in its processed form. You can discard the event by returning null. */
     processEvent?: (event: PluginEvent, meta: Meta<Input>) => PluginEvent | null | Promise<PluginEvent | null>
     /** DEPRECATED: Receive a batch of events and return it in its processed form. You can discard events by not including them in the returned array. You can also append additional events to the returned array. */
     processEventBatch?: (eventBatch: PluginEvent[], meta: Meta<Input>) => PluginEvent[] | Promise<PluginEvent[]>
-    /** Receive a single non-snapshot event.  */
+    /** Receive a batch of non-snapshot event. */
     exportEvents?: (events: ProcessedPluginEvent[], meta: Meta<Input>) => void | Promise<void>
     /** Receive a single processed event. */
     onEvent?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
