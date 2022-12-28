@@ -11,7 +11,9 @@ export type PluginInput = {
 }
 
 export type PluginSettings = {
-    /** Some plugins incur high costs for small batches, e.g. S3. In these cases 
+    /** Experimental: 
+    
+        Some plugins incur high costs for small batches, e.g. S3. In these cases 
         we want to signal that the plugin would prefer larger batches. There are other
         plugins that may not be written to handle large batches, for these we will want 
         to keep batches small to not break their behaviour.
