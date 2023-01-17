@@ -1,5 +1,5 @@
 import { City } from '@maxmind/geoip2-node'
-import { Response } from 'node-fetch'
+import { Response, Headers } from 'node-fetch'
 
 /** Input for a PostHog plugin. */
 export type PluginInput = {
@@ -66,7 +66,7 @@ export interface Plugin<Input extends PluginInput = {}> {
 export enum MetricsOperation {
     Sum = 'sum',
     Min = 'min',
-    Max = 'max'
+    Max = 'max',
 }
 
 export type AllowedMetricsOperations = MetricsOperation.Sum | MetricsOperation.Max | MetricsOperation.Min
@@ -181,8 +181,10 @@ interface MetricsControlsMin {
 
 type FullMetricsControls = MetricsControlsIncrement & MetricsControlsMax & MetricsControlsMin
 
-type MetricsControls<V> = V extends MetricsOperation.Sum ? MetricsControlsIncrement : 
-    V extends MetricsOperation.Max ? MetricsControlsMax 
+type MetricsControls<V> = V extends MetricsOperation.Sum
+    ? MetricsControlsIncrement
+    : V extends MetricsOperation.Max
+    ? MetricsControlsMax
     : MetricsControlsMin
 
 type MetaMetricsFromMetricsOptions<J extends Record<string, string>> = {
