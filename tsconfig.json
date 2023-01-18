@@ -2,6 +2,8 @@
     "compilerOptions": {
         "module": "CommonJS",
         "target": "ESNext",
+        "lib": ["es2020"],
+        "skipLibCheck": true,
         "declaration": true,
         "removeComments": true,
         "emitDecoratorMetadata": true,
