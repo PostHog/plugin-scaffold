@@ -40,8 +40,6 @@ export interface Plugin<Input extends PluginInput = {}> {
     exportEvents?: (events: ProcessedPluginEvent[], meta: Meta<Input>) => void | Promise<void>
     /** Receive a single processed event. */
     onEvent?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
-    /** Receive a single snapshot (session recording) event. */
-    onSnapshot?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Ran every minute, on the minute. */
     runEveryMinute?: (meta: Meta<Input>) => void
     /** Ran every hour, on the hour. */
