@@ -1,17 +1,23 @@
 import { City } from '@maxmind/geoip2-node'
-import { Response, Headers, RequestInfo, RequestInit } from 'node-fetch'
+import { Response, Headers} from 'node-fetch'
 
 /** Input for a PostHog plugin. */
 export type PluginInput = {
     config?: Record<string, any>
     attachments?: Record<string, PluginAttachment | undefined>
     global?: Record<string, any>
-    /** DEPRECATED */
+    /** @deprecated */
     jobs?: Record<string, JobOptions>
-    /** DEPRECATED */
+    /** @deprecated */
     metrics?: Record<string, AllowedMetricsOperations>
 }
 
+interface Webhook {
+    url: string
+    body: string
+    headers?: Record<string, string> // default: {}
+    method?: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH' // default: 'POST'
+}
 
 /** A PostHog plugin. */
 export interface Plugin<Input extends PluginInput = {}> {
@@ -19,36 +25,36 @@ export interface Plugin<Input extends PluginInput = {}> {
     setupPlugin?: (meta: Meta<Input>) => void
     /** Ran when the plugin is unloaded by the PostHog plugin server. */
     teardownPlugin?: (meta: Meta<Input>) => void
-    /** DEPRECATED */
+    /** @deprecated */
     getSettings?: (meta: Meta<Input>) => PluginSettings
     /** Used for filtering events, return True to keep the event and False to drop it. */
     filterEvent?: (event: PostHogEvent, meta: Meta<Input>) => boolean
     /** Used for modifying events, return the updated event */
     modifyEvent?: (event: PostHogEvent, meta: Meta<Input>) => PostHogEvent
-    /** DEPRECATED: use filterEvent or modifyEvent */
+    /** @deprecated: use filterEvent or modifyEvent */
     processEvent?: (event: PluginEvent, meta: Meta<Input>) => PluginEvent | null | Promise<PluginEvent | null>
-    /** DEPRECATED: use filterEvent or modifyEvent */ 
+    /** @deprecated: use filterEvent or modifyEvent */
     processEventBatch?: (eventBatch: PluginEvent[], meta: Meta<Input>) => PluginEvent[] | Promise<PluginEvent[]>
-    /** DEPRECATED: use composeWebhook */
+    /** @deprecated: use composeWebhook */
     exportEvents?: (events: ProcessedPluginEvent[], meta: Meta<Input>) => void | Promise<void>
-    /** DEPRECATED: use composeWebhook */
-    onEvent?: (event: ProcessedPluginEvent | PostHogEvent, meta: Meta<Input>) => void | Promise<void>
+    /** @deprecated: use composeWebhook */
+    onEvent?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
     /** Used for exporting a single event */
-    composeWebhook?: (event: PostHogEvent, meta: Meta<Input>) => [RequestInfo, RequestInit]
-    /** DEPRECATED:  */
+    composeWebhook?: (event: PostHogEvent, meta: Meta<Input>) => Webhook | null
+    /** @deprecated:  */
     runEveryMinute?: (meta: Meta<Input>) => void
-    /** DEPRECATED:  */
+    /** @deprecated:  */
     runEveryHour?: (meta: Meta<Input>) => void
-    /** DEPRECATED:  */
+    /** @deprecated:  */
     runEveryDay?: (meta: Meta<Input>) => void
-    /** DEPRECATED */
+    /** @deprecated */
     jobs?: {
         [K in keyof Meta<Input>['jobs']]: (
             opts: Parameters<Meta<Input>['jobs'][K]>[0],
             meta: Meta<Input>
         ) => void | Promise<void>
     }
-    /** DEPRECATED */
+    /** @deprecated */
     metrics?: {
         [K in keyof Meta<Input>['metrics']]: AllowedMetricsOperations
     }
@@ -69,13 +75,14 @@ export interface PostHogEvent {
     team_id: number
     distinct_id: string
     event: string
-    timestamp: string
+    timestamp: Date // in UTC timezone
     /** Optionally contains
-     * $ip - for ip address
+     * $ip - for ip address, which will be removed later if project settings anonymize_ips is true
      * $set - for person properties to set
      * $set_once - for person properties to set if not already set
+     * $elements_chain - for autocapture elements chain
      */
-    properties: Properties // contains $ip, $set and $set_once
+    properties: Properties
 }
 
 
@@ -86,20 +93,20 @@ export interface PluginAttachment {
 }
 
 interface BasePluginMeta {
-    // DEPRECATED
+    // @deprecated
     cache: CacheExtension
-    // DEPRECATED
+    // @deprecated
     storage: StorageExtension
-    // DEPRECATED
+    // @deprecated
     geoip: GeoIPExtension
     config: Record<string, any>
     global: Record<string, any>
     attachments: Record<string, PluginAttachment | undefined>
-    // DEPRECATED
+    // @deprecated
     jobs: Record<string, (opts: any) => JobControls>
-    // DEPRECATED
+    // @deprecated
     metrics: Record<string, Partial<FullMetricsControls>>
-    // DEPRECATED
+    // @deprecated
     utils: UtilsExtension
 }
 
@@ -110,11 +117,11 @@ export interface Meta<Input extends PluginInput = {}> extends BasePluginMeta {
         : Record<string, PluginAttachment | undefined>
     config: Input['config'] extends Record<string, any> ? Input['config'] : Record<string, any>
     global: Input['global'] extends Record<string, any> ? Input['global'] : Record<string, any>
-    // DEPRECATED
+    // @deprecated
     jobs: Input['jobs'] extends Record<string, JobOptions>
         ? MetaJobsFromJobOptions<Input['jobs']>
         : Record<string, (opts: any) => JobControls>
-    // DEPRECATED
+    // @deprecated
     metrics: Input['metrics'] extends Record<string, AllowedMetricsOperations>
         ? MetaMetricsFromMetricsOptions<Input['metrics']>
         : Record<string, FullMetricsControls>
@@ -165,17 +172,17 @@ export interface PluginPerson {
 
 // *** EVERYTHING BELOW IS DEPRECATED ***
 
-// DEPRECATED
+// @deprecated
 export enum MetricsOperation {
     Sum = 'sum',
     Min = 'min',
     Max = 'max',
 }
 
-// DEPRECATED
+// @deprecated
 export type AllowedMetricsOperations = MetricsOperation.Sum | MetricsOperation.Max | MetricsOperation.Min
 
-// DEPRECATED
+// @deprecated
 export type PluginSettings = {
     /** Experimental: 
     
@@ -189,7 +196,7 @@ export type PluginSettings = {
     handlesLargeBatches?: boolean
 }
 
-/** DEPRECATED: Use PostHogEvent.properties['$elements_chain'] */
+/** @deprecated: Use PostHogEvent.properties['$elements_chain'] */
 export interface Element {
     text?: string
     tag_name?: string
@@ -204,7 +211,7 @@ export interface Element {
     group_id?: number
 }
 
-/** DEPRECATED: Use PostHogEvent */
+/** @deprecated: Use PostHogEvent */
 export interface PluginEvent {
     distinct_id: string
     ip: string | null
@@ -225,7 +232,7 @@ export interface PluginEvent {
     /** Person associated with the original distinct ID of the event. */
     person?: PluginPerson
 }
-/** DEPRECATED: Use PostHogEvent */
+/** @deprecated: Use PostHogEvent */
 export interface ProcessedPluginEvent {
     distinct_id: string
     ip: string | null
@@ -246,57 +253,57 @@ export interface ProcessedPluginEvent {
     elements?: Element[]
 }
 
-// DEPRECATED
+// @deprecated
 type JobOptions = Record<string, any> | undefined
 
-// DEPRECATED
+// @deprecated
 type JobControls = {
     runNow: () => Promise<void>
     runIn: (duration: number, unit: string) => Promise<void>
     runAt: (date: Date) => Promise<void>
 }
 
-// DEPRECATED
+// @deprecated
 interface MetricsControlsIncrement {
     increment: (value: number) => Promise<void>
 }
 
-// DEPRECATED
+// @deprecated
 interface MetricsControlsMax {
     max: (value: number) => Promise<void>
 }
 
-// DEPRECATED
+// @deprecated
 interface MetricsControlsMin {
     min: (value: number) => Promise<void>
 }
 
-// DEPRECATED
+// @deprecated
 type FullMetricsControls = MetricsControlsIncrement & MetricsControlsMax & MetricsControlsMin
 
-// DEPRECATED
+// @deprecated
 type MetricsControls<V> = V extends MetricsOperation.Sum
     ? MetricsControlsIncrement
     : V extends MetricsOperation.Max
     ? MetricsControlsMax
     : MetricsControlsMin
 
-// DEPRECATED
+// @deprecated
 type MetaMetricsFromMetricsOptions<J extends Record<string, string>> = {
     [K in keyof J]: MetricsControls<J[K]>
 }
 
-// DEPRECATED
+// @deprecated
 type MetaJobsFromJobOptions<J extends Record<string, JobOptions>> = {
     [K in keyof J]: (opts: J[K]) => JobControls
 }
-// DEPRECATED
+// @deprecated
 export interface CacheOptions {
     /** Whether input should be JSON-stringified/parsed. */
     jsonSerialize?: boolean
 }
 
-// DEPRECATED
+// @deprecated
 export interface CacheExtension {
     set: (key: string, value: unknown, ttlSeconds?: number, options?: CacheOptions) => Promise<void>
     get: (key: string, defaultValue: unknown, options?: CacheOptions) => Promise<unknown>
@@ -309,30 +316,30 @@ export interface CacheExtension {
     lrem: (key: string, count: number, elementKey: string) => Promise<number>
 }
 
-// DEPRECATED
+// @deprecated
 export interface StorageExtension {
     set: (key: string, value: unknown) => Promise<void>
     get: (key: string, defaultValue: unknown) => Promise<unknown>
     del: (key: string) => Promise<void>
 }
 
-// DEPRECATED
+// @deprecated
 export interface GeoIPExtension {
     locate: (ip: string) => Promise<City | null>
 }
 
-// DEPRECATED
+// @deprecated
 export interface UtilsExtension {
     cursor: CursorUtils
 }
 
-// DEPRECATED
+// @deprecated
 export interface CursorUtils {
     init: (key: string, initialValue?: number) => Promise<void>
     increment: (key: string, incrementBy?: number) => Promise<number>
 }
 
-// DEPRECATED
+// @deprecated
 interface ApiMethodOptions {
     headers?: Headers
     data?: Record<string, any>
@@ -341,7 +348,7 @@ interface ApiMethodOptions {
     personalApiKey?: string
 }
 
-// DEPRECATED
+// @deprecated
 export interface ApiExtension {
     get(path: string, options?: ApiMethodOptions): Promise<Response>
     post(path: string, options?: ApiMethodOptions): Promise<Response>
@@ -349,7 +356,7 @@ export interface ApiExtension {
     delete(path: string, options?: ApiMethodOptions): Promise<Response>
 }
 
-// DEPRECATED
+// @deprecated
 export interface PostHogExtension {
     capture(event: string, properties?: Record<string, any>): Promise<void>
     api: ApiExtension
