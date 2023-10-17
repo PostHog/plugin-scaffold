@@ -12,7 +12,7 @@ export type PluginInput = {
     metrics?: Record<string, AllowedMetricsOperations>
 }
 
-interface Webhook {
+export interface Webhook {
     url: string
     body: string
     headers?: Record<string, string> // default: {}
