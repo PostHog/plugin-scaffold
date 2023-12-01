@@ -86,8 +86,7 @@ jobs:
               id: yarn-upgrade-posthog
               run: |
                   cd posthog/
-                  OUTGOING_VERSION=$(jq '.dependencies["@posthog/plugin-scaffold"]' package.json -r)
-                  echo "::set-output name=outgoing-version::$OUTGOING_VERSION"
+                  echo "outgoing-version=$(jq '.dependencies["@posthog/plugin-scaffold"]' package.json -r)" >> "$GITHUB_OUTPUT"
                   for i in $(seq 1 $RETRY_TIMES); do
                       # Retry loop because of npm being _eventually_ consistent
                       if yarn upgrade @posthog/plugin-scaffold@${{ env.REPO_VERSION }}; then
