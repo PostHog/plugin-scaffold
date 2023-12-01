@@ -110,7 +110,7 @@ jobs:
               id: changelog
               run: |
                   cd plugin-scaffold
-                  PULL_REQUESTS=$(git log v${{ steps.yarn-upgrade.outputs.outgoing-version }}..v${{ env.REPO_VERSION }} --pretty=format:%s --grep='^.*\d*)$' --reverse | sed -e 's;(#;(PostHog/plugin-scaffold#;' -e 's/^/- /')
+                  PULL_REQUESTS=$(git log v${{ steps.yarn-upgrade-posthog.outputs.outgoing-version }}..v${{ env.REPO_VERSION }} --pretty=format:%s --grep='^.*\d*)$' --reverse | sed -e 's;(#;(PostHog/plugin-scaffold#;' -e 's/^/- /')
                   # Escape characters that are problematic for GitHub Actions set-output
                   PULL_REQUESTS="${PULL_REQUESTS//'%'/'%25'}"
                   PULL_REQUESTS="${PULL_REQUESTS//$'\n'/'%0A'}"
@@ -131,8 +131,9 @@ jobs:
                   body: |
                       ## Changes
                       plugin-scaffold version ${{ env.REPO_VERSION }} has been released. This updates PostHog to use it.
-                      https://github.com/PostHog/plugin-scaffold/compare/v${{ steps.yarn-upgrade.outputs.outgoing-version }}...v${{ env.REPO_VERSION }}:
+                      https://github.com/PostHog/plugin-scaffold/compare/v${{ steps.yarn-upgrade-posthog.outputs.outgoing-version }}...v${{ env.REPO_VERSION }}:
                       ${{ steps.changelog.outputs.pull-requests }}
+
             - name: Output pull request result
               run: |
                   echo "PostHog pull request for plugin-scaffold version ${{ env.REPO_VERSION }} ready: ${{ steps.main-repo-pr.outputs.pull-request-url }}"
