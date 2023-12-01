@@ -5,7 +5,7 @@
         "lib": ["es2020"],
         "skipLibCheck": true,
         "declaration": true,
-        "removeComments": true,
+        "removeComments": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "moduleResolution": "node",
