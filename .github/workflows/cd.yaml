@@ -16,7 +16,7 @@ jobs:
             is-unpublished-version: ${{ steps.check-package-version.outputs.is-unpublished-version }}
         steps:
             - name: Checkout the repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Check package version and detect an update
               id: check-package-version
@@ -32,7 +32,7 @@ jobs:
             PUBLISHED_VERSION: ${{ needs.check-package-version.outputs.published-version }}
         steps:
             - name: Checkout the repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
               with:
                   fetch-depth: 0
                   token: ${{ secrets.POSTHOG_BOT_GITHUB_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
             PUBLISHED_VERSION: ${{ needs.check-package-version.outputs.published-version }}
         steps:
             - name: Check out main repo
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
               with:
                   path: posthog
                   repository: PostHog/posthog
