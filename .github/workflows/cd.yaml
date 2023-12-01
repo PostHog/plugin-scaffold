@@ -114,7 +114,7 @@ jobs:
                   PULL_REQUESTS="${PULL_REQUESTS//'%'/'%25'}"
                   PULL_REQUESTS="${PULL_REQUESTS//$'\n'/'%0A'}"
                   PULL_REQUESTS="${PULL_REQUESTS//$'\r'/'%0D'}"
-                  echo "::set-output name=pull-requests::$PULL_REQUESTS"
+                  echo "pull-requests=$PULL_REQUESTS" >> "$GITHUB_OUTPUT"
 
             - name: Create main repo pull request
               id: main-repo-pr
