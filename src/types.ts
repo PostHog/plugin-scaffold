@@ -67,6 +67,8 @@ export type PluginMeta<T> = T extends { __internalMeta?: infer M } ? M : never
 
 export type Properties = Record<string, any>
 
+type PostHogEventProperties = { '$elements_chain' : string, [id: string]: any };
+
 /** We're moving to a single PostHogEvent model use this in any future apps/plugins 
 */
 export interface PostHogEvent {
@@ -82,7 +84,7 @@ export interface PostHogEvent {
      * $set_once - for person properties to set if not already set
      * $elements_chain - for autocapture elements chain
      */
-    properties: Properties
+    properties: PostHogEventProperties
 }
 
 
