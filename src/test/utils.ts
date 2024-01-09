@@ -1,4 +1,4 @@
-function createEvent(changes = {}) {
+export function createEvent(changes = {}) {
     return {
         distinct_id: '007',
         ip: '127.128.129.130',
@@ -12,7 +12,7 @@ function createEvent(changes = {}) {
     }
 }
 
-function createPageview() {
+export function createPageview() {
     return createEvent({
         event: '$pageview',
         properties: {
@@ -41,7 +41,7 @@ function createPageview() {
     })
 }
 
-function createIdentify() {
+export function createIdentify() {
     return createEvent({
         event: '$identify',
         $set: {
@@ -55,24 +55,24 @@ function createIdentify() {
     })
 }
 
-function clone(object) {
+export function clone(object: unknown) {
     return JSON.parse(JSON.stringify(object))
 }
 
 let testMeta = {}
 resetMeta({})
 
-function getMeta() {
+export function getMeta() {
     return testMeta
 }
 
 function createCache() {
-    const cache = {}
+    const cache: Record<string, unknown> = {}
     return {
-        set: (key, value) => {
+        set: (key: string, value: unknown) => {
             cache[key] = value
         },
-        get: async (key, defaultValue) => {
+        get: async (key: string, defaultValue: unknown) => {
             if (typeof cache[key] === 'undefined') {
                 return defaultValue
             }
@@ -81,7 +81,7 @@ function createCache() {
     }
 }
 
-function resetMeta(meta) {
+export function resetMeta(meta: {}) {
     testMeta = {
         config: {},
         cache: createCache(),
@@ -91,8 +91,4 @@ function resetMeta(meta) {
         ...meta,
     }
     return testMeta
-}
-
-module.exports = {
-    createEvent, createPageview, createIdentify, clone, getMeta, createCache, resetMeta
 }
