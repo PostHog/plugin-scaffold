@@ -27,13 +27,13 @@ export interface Plugin<Input extends PluginInput = {}> {
     teardownPlugin?: (meta: Meta<Input>) => void
     /** @deprecated */
     getSettings?: (meta: Meta<Input>) => PluginSettings
-    /** Used for filtering events, return True to keep the event and False to drop it. */
+    /** Not supported yet: Used for filtering events, return True to keep the event and False to drop it. */
     filterEvent?: (event: PostHogEvent, meta: Meta<Input>) => boolean
-    /** Used for modifying events, return the updated event */
+    /** Not supported yet: Used for modifying events, return the updated event */
     modifyEvent?: (event: PostHogEvent, meta: Meta<Input>) => PostHogEvent
-    /** @deprecated: use filterEvent or modifyEvent */
+    /** For filtering or modifing events */
     processEvent?: (event: PluginEvent, meta: Meta<Input>) => PluginEvent | null | Promise<PluginEvent | null>
-    /** @deprecated: use filterEvent or modifyEvent */
+    /** @deprecated: use processEvent */
     processEventBatch?: (eventBatch: PluginEvent[], meta: Meta<Input>) => PluginEvent[] | Promise<PluginEvent[]>
     /** @deprecated: use composeWebhook */
     exportEvents?: (events: ProcessedPluginEvent[], meta: Meta<Input>) => void | Promise<void>
