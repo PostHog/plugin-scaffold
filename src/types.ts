@@ -39,6 +39,7 @@ export interface Plugin<Input extends PluginInput = {}> {
     exportEvents?: (events: ProcessedPluginEvent[], meta: Meta<Input>) => void | Promise<void>
     /** @deprecated: use composeWebhook */
     onEvent?: (event: ProcessedPluginEvent, meta: Meta<Input>) => void | Promise<void>
+    onEventWithPostHogEvent?: (event: PostHogEvent, meta: Meta<Input>) => Promise<void> | void
     /** Used for exporting a single event */
     composeWebhook?: (event: PostHogEvent, meta: Meta<Input>) => Webhook | null
     /** @deprecated:  */
@@ -83,8 +84,22 @@ export interface PostHogEvent {
      * $elements_chain - for autocapture elements chain
      */
     properties: Properties
+    // Define in plugin.json if this should be provided for this plugin
+    person?: PostHogPerson
+    groups?: Record<string, PostHogGroup>
 }
 
+export interface PostHogPerson {
+    uuid: sting
+    properties: Properties
+    posthog_url: string
+}
+
+export interface PostHogGroup {
+    key: string
+    properties: Properties
+    posthog_url: string 
+}
 
 export interface PluginAttachment {
     content_type: string
