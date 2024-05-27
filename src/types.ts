@@ -90,7 +90,7 @@ export interface PostHogEvent {
 }
 
 export interface PostHogPerson {
-    uuid: sting
+    uuid: string
     properties: Properties
     posthog_url: string
 }
