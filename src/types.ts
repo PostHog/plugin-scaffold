@@ -156,6 +156,7 @@ export interface PluginConfigStructure {
     secret?: boolean
     required_if?: ConfigDependencyArray
     visible_if?: ConfigDependencyArray
+    templating?: boolean
 }
 
 export interface PluginConfigDefault extends PluginConfigStructure {
