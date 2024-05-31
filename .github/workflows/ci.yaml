@@ -1,0 +1,28 @@
+name: 'CI'
+
+on:
+    pull_request:
+
+jobs:
+    build:
+        name: Build and test
+        runs-on: ubuntu-20.04
+        steps:
+            - name: Checkout the repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.POSTHOG_BOT_GITHUB_TOKEN }}
+
+            - name: Set up Node 16
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 16
+                  registry-url: https://registry.npmjs.org
+                  cache: yarn
+
+            - name: Install dependencies
+              run: yarn --frozen-lockfile
+
+            - name: Publish the package in the npm registry
+              run: yarn build
